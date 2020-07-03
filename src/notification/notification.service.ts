@@ -57,6 +57,11 @@ export class NotificationService {
         }
     }
 
+    async sendTestNotification(subscriberEndpoint: string, notificationType: string) {
+        const type = await this.notificationTypeModel.findOne({ notificationType });
+        this.httpService.post(subscriberEndpoint, type.testData).subscribe();
+    }
+
     async createNotificationLog(subscriberEndpoint: string, notificationType: string, data: any) {
         try {
             const notificationLog = new this.notificationLogModel({

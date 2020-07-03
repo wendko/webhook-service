@@ -24,6 +24,13 @@ export class NotificationController {
         return null;
     }
 
+    @Post('test-notification')
+    async sendTestNotification(
+        @Body('subscriberEndpoint') subscriberEndpoint: string,
+        @Body('notificationType') notificationType: string
+    ) {
+        await this.notificationService.sendTestNotification(subscriberEndpoint, notificationType);
+    }
 
     @Post('resend-notification')
     async resendNotifications(
@@ -36,8 +43,6 @@ export class NotificationController {
     }
 
 
-
-    // put in another service?
     @EventPattern('invoice_paid')
     async handleInvoicePaid(data) {
         await this.notificationService.sendNotifications('invoice_paid', data);
