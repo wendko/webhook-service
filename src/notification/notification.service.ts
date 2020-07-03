@@ -87,7 +87,7 @@ export class NotificationService {
 
     private async getNotificationLogs(subscriberEndpoint: string, notificationType: string, count: number = 1) {
         try {
-            const results = await this.notificationLogModel.find({ subscriberEndpoint, notificationType }).limit(count);
+            const results = await this.notificationLogModel.find({ subscriberEndpoint, notificationType }).sort({ id: 1 }).limit(count);
             return results;
         } catch (e) {
             throw new BadRequestException(e);

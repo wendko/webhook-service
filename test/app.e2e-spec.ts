@@ -1,24 +1,39 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+// import { NotificationType, NotificationLog, NotificationTypeSchema, NotificationLogSchema } from './notification.model';
+// import DbModule from './db.service';
+import { NotificationService } from 'src/notification/notification.service';
+import { SubscriptionService } from 'src/subscription/subscription.service';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication;
+// const testUser = {
+//     email: 'test@test.com',
+//     firstName: 'earrieta',
+//     lastName: 'dev',
+// };
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+// const wait = time => new Promise(resolve => setTimeout(() => resolve(time), time));
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+// describe('NotificationService', () => {
+//     let service: NotificationService;
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-});
+//     beforeEach(async () => {
+//         const module: TestingModule = await Test.createTestingModule({
+//             imports: [
+//                 DbModule(),
+//                 // TypeOrmModule.forFeature([
+//                 //     NotificationTypeSchema, NotificationLogSchema
+//                 // ]),
+//             ],
+//             providers: [
+//                 NotificationService, SubscriptionService
+//             ],
+//         }).compile();
+
+//         service = module.get<NotificationService>(NotificationService);
+//     });
+
+//     it('should be defined', () => {
+//         expect(service).toBeDefined();
+//     });
+
+// });

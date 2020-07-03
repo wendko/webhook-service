@@ -48,4 +48,9 @@ export class NotificationController {
         await this.notificationService.sendNotifications('invoice_paid', data);
     }
 
+    @EventPattern('fva_created')
+    async handleFixedVirtualAccountCreated(data) {
+        await this.notificationService.sendNotifications('fva_created', data);
+    }
+
 }

@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationModule } from './notification/notification.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
         NotificationModule,
         SubscriptionModule,
-        MongooseModule.forRoot('mongodb://localhost/webhooks_system')
+        ConfigModule.forRoot(),
+        MongooseModule.forRoot(process.env.DB_HOST)
     ],
     controllers: [AppController],
     providers: [AppService],
