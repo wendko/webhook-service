@@ -25,11 +25,13 @@ export class NotificationController {
     }
 
 
-    @Post()
+    @Post('resend-notification')
     async resendNotifications(
-
+        @Body('subscriberEndpoint') subscriberEndpoint: string,
+        @Body('notificationType') notificationType: string,
+        @Body('count') count: number = 1,
     ) {
-
+        console.log(subscriberEndpoint, notificationType, count);
     }
 
 
@@ -37,7 +39,6 @@ export class NotificationController {
     // put in another service?
     @EventPattern('invoice_paid')
     async handleInvoicePaid(data) {
-        console.log('xendit service got invoice paid!');
         await this.notificationService.sendNotifications('invoice_paid', data);
     }
 

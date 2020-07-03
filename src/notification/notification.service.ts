@@ -8,13 +8,18 @@ import { SubscriptionService } from "src/subscription/subscription.service";
 export class NotificationService {
 
     constructor(
-        @InjectModel('Notification') private readonly notificationTypeModel: Model<NotificationType>,
-        @InjectModel('Notification') private readonly notificationLogModel: Model<NotificationLog>,
+        @InjectModel('NotificationType') private readonly notificationTypeModel: Model<NotificationType>,
+        @InjectModel('NotificationLog') private readonly notificationLogModel: Model<NotificationLog>,
         private subscriptionService: SubscriptionService,
         private httpService: HttpService
     ) { }
 
     async insertNotificationType(notificationType: string, testData: any) {
+        const existingNotificationType = await this.findNotificationType(notificationType);
+        if (existingNotificationType) {
+            throw new BadRequestException('Notification type already exists');
+        }
+
         try {
             const newNotification = new this.notificationTypeModel({
                 notificationType,
@@ -40,16 +45,28 @@ export class NotificationService {
     async sendNotifications(notificationType: string, data: any) {
         const results = await this.subscriptionService.getSubscriptionsByNotificationType(notificationType);
         for (const result of results) {
-            this.httpService.post(result.endpoint, data).subscribe(async r => {
-                // check status code OK
+            try {
+                this.httpService.post(result.endpoint, data).subscribe(async r => {
+                    // check status code OK
 
-                await this.createNotificationLog();
-                console.log('result : ', r)
-            });
+                    await this.createNotificationLog(result.endpoint, notificationType, data);
+                    console.log('result : ', r)
+                });
+            } catch (e) {
+                throw new BadRequestException(e);
+            }
         }
     }
 
-    async createNotificationLog() {
+    async createNotificationLog(subscriberEndpoint: string, notificationType: string, data: any) {
+        try {
+            const notificationLog = new this.notificationLogModel({
+                subscriberEndpoint, notificationType, data
+            });
+            await notificationLog.save();
+        } catch (e) {
+            throw new BadRequestException(e);
+        }
 
     }
 

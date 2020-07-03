@@ -1,6 +1,6 @@
 import { Module, HttpModule } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { NotificationTypeSchema } from "./notification.model";
+import { NotificationTypeSchema, NotificationLogSchema } from "./notification.model";
 import { NotificationController } from "./notification.controller";
 import { NotificationService } from "./notification.service";
 import { SubscriptionModule } from "src/subscription/subscription.module";
@@ -9,7 +9,10 @@ import { SubscriptionModule } from "src/subscription/subscription.module";
     imports: [
         HttpModule,
         SubscriptionModule,
-        MongooseModule.forFeature([{ name: 'Notification', schema: NotificationTypeSchema }]),
+        MongooseModule.forFeature([
+            { name: 'NotificationType', schema: NotificationTypeSchema },
+            { name: 'NotificationLog', schema: NotificationLogSchema }
+        ]),
     ],
     controllers: [NotificationController],
     providers: [NotificationService],

@@ -12,13 +12,14 @@ export interface NotificationType extends mongoose.Document {
 }
 
 export const NotificationLogSchema = new mongoose.Schema({
+    subscriberEndpoint: { type: String, required: true },
     notificationType: { type: String, required: true },
-    testData: { type: Object }
+    data: { type: Object, required: true }
 })
 
 export interface NotificationLog extends mongoose.Document {
     id: string,
     subscriberEndpoint: string,
-    data: string,
-
+    notificationType: string,
+    data: any
 }
