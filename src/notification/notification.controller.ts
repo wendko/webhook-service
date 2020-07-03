@@ -29,9 +29,10 @@ export class NotificationController {
     async resendNotifications(
         @Body('subscriberEndpoint') subscriberEndpoint: string,
         @Body('notificationType') notificationType: string,
-        @Body('count') count: number = 1,
+        @Body('count') count: number,
     ) {
-        console.log(subscriberEndpoint, notificationType, count);
+        await this.notificationService.resendNotifications(subscriberEndpoint, notificationType, count);
+        return null;
     }
 
 

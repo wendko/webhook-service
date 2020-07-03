@@ -67,7 +67,25 @@ export class NotificationService {
         } catch (e) {
             throw new BadRequestException(e);
         }
+    }
 
+    async resendNotifications(subscriberEndpoint: string, notificationType: string, count: number) {
+        const logs = await this.getNotificationLogs(subscriberEndpoint, notificationType, count);
+        for (const log of logs) {
+            this.httpService.post(subscriberEndpoint, log.data).subscribe(async r => {
+                // update retries count
+            });
+
+        }
+    }
+
+    private async getNotificationLogs(subscriberEndpoint: string, notificationType: string, count: number = 1) {
+        try {
+            const results = await this.notificationLogModel.find({ subscriberEndpoint, notificationType }).limit(count);
+            return results;
+        } catch (e) {
+            throw new BadRequestException(e);
+        }
     }
 
     private async findNotificationType(notificationType: string) {
