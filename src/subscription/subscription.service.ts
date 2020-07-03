@@ -8,10 +8,16 @@ export class SubscriptionService {
 
     constructor(@InjectModel('Subscription') private readonly subscriptionModel: Model<Subscription>) { }
 
-    async insertSubscription(endpoint: string, notificationType: string) {
+    async insertSubscription(subscriberEndpoint: string, notificationType: string) {
+        const subscription = await this.findSubscription(subscriberEndpoint, notificationType);
+        console.log(subscription)
+        if (subscription) {
+            throw new BadRequestException('Subscription already exists');
+        }
+
         try {
             const newSubscription = new this.subscriptionModel({
-                endpoint,
+                subscriberEndpoint,
                 notificationType
             });
             const result = await newSubscription.save();
@@ -28,5 +34,10 @@ export class SubscriptionService {
         } catch (e) {
             throw new NotFoundException(e);
         }
+    }
+
+    private async findSubscription(subscriberEndpoint: string, notificationType: string) {
+        const subscription = await this.subscriptionModel.findOne({ subscriberEndpoint, notificationType });
+        return subscription;
     }
 }

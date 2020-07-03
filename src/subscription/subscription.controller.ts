@@ -7,10 +7,10 @@ export class SubscriptionController {
 
     @Post()
     async createNewSubscription(
-        @Body('endpoint') endpoint: string,
+        @Body('subscriberEndpoint') subscriberEndpoint: string,
         @Body('notificationType') notificationType: string,
     ) {
-        const id = await this.subscriptionService.insertSubscription(endpoint, notificationType);
+        const id = await this.subscriptionService.insertSubscription(subscriberEndpoint, notificationType);
         return id;
     }
 

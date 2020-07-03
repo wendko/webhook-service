@@ -46,11 +46,10 @@ export class NotificationService {
         const results = await this.subscriptionService.getSubscriptionsByNotificationType(notificationType);
         for (const result of results) {
             try {
-                this.httpService.post(result.endpoint, data).subscribe(async r => {
+                this.httpService.post(result.subscriberEndpoint, data).subscribe(async r => {
                     // check status code OK
 
-                    await this.createNotificationLog(result.endpoint, notificationType, data);
-                    console.log('result : ', r)
+                    await this.createNotificationLog(result.subscriberEndpoint, notificationType, data);
                 });
             } catch (e) {
                 throw new BadRequestException(e);
@@ -61,7 +60,7 @@ export class NotificationService {
     async createNotificationLog(subscriberEndpoint: string, notificationType: string, data: any) {
         try {
             const notificationLog = new this.notificationLogModel({
-                subscriberEndpoint, notificationType, data
+                subscriberEndpoint, notificationType, data, retries: 0
             });
             await notificationLog.save();
         } catch (e) {
@@ -73,7 +72,9 @@ export class NotificationService {
         const logs = await this.getNotificationLogs(subscriberEndpoint, notificationType, count);
         for (const log of logs) {
             this.httpService.post(subscriberEndpoint, log.data).subscribe(async r => {
-                // update retries count
+                const updateLog = await this.notificationLogModel.findById(log.id);
+                updateLog.retries = updateLog.retries + 1;
+                updateLog.save();
             });
 
         }
